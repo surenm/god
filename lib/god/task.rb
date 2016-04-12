@@ -378,7 +378,8 @@ module God
 
       # Notify.
       if result && condition.notify
-        self.notify(condition, messages.last)
+        notification_message = self.notification_message(self, metric, condition, result)
+        self.notify(condition, notification_message)
       end
 
       # After-condition.
@@ -427,7 +428,8 @@ module God
 
       # Notify.
       if condition.notify
-        self.notify(condition, messages.last)
+        notification_message = self.notification_message(self, metric, condition, true)
+        self.notify(condition, notification_message)
       end
 
       # Get the destination.
@@ -489,6 +491,24 @@ module God
       applog(watch, :debug, debug_message)
 
       messages
+    end
+    
+    def notification_message(watch, metric, condition, result)
+      notification_message = {
+        watch: watch.name,
+        condition: condition.base_name,
+        result: result
+      }
+      
+      if condition.extra
+        if condition.extra.kind_of?(Hash)
+          notification_message.merge!(condition.extra)
+        else
+          notification_message[:extra] = condition.extra
+        end
+      end
+      
+      notification_message
     end
 
     # Format the destination specification for use in debug logging.

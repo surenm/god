@@ -49,6 +49,13 @@ module God
         case arg(:format)
           when :form
             req = Net::HTTP::Post.new(uri.request_uri)
+            if data[:message].kind_of?(Hash)
+              message = data[:message]
+              data.delete(:message)
+              message.each do |key, value|
+                data["message[#{key}]"] = value
+              end
+            end
             req.set_form_data(data)
           when :json
             req = Net::HTTP::Post.new(uri.request_uri)

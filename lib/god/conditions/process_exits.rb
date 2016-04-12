@@ -38,6 +38,7 @@ module God
           EventHandler.register(pid, :proc_exit) do |extra|
             formatted_extra = extra.size > 0 ? " #{extra.inspect}" : ""
             self.info = "process #{pid} exited#{formatted_extra}"
+            self.extra = extra
             self.watch.trigger(self)
           end
 

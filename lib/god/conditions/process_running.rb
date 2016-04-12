@@ -44,7 +44,13 @@ module God
 
         pid = self.pid
         active = pid && System::Process.new(pid).exists?
-
+        
+        self.extra = {
+          pid: pid,
+          running: self.running,
+          active: active
+        }
+        
         if (self.running && active)
           self.info.concat(["process is running"])
           true
